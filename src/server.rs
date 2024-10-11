@@ -1,4 +1,4 @@
-//! Server implementation for the `bore` service.
+` service.
 
 use std::{io, net::SocketAddr, ops::RangeInclusive, sync::Arc, time::Duration};
 
@@ -132,7 +132,20 @@ impl Server {
                     const TIMEOUT: Duration = Duration::from_millis(500);
                     if let Ok(result) = timeout(TIMEOUT, listener.accept()).await {
                         let (stream2, addr) = result?;
-                        info!(?addr, ?port, "new connection");
+                        info!(?addr, ?port, "new incoming connection");
+
+                        // Read the whitelist address from file
+                        let whitelist_path = "/root/bore_whitelist.txt";
+                        let whitelist = std::fs::read_to_string(whitelist_path).unwrap();
+                        let whitelist_addresses: Vec<String> = whitelist.lines().map(|line| line.to_string()).collect();
+                        println!("whitelist_addresses: {:?}", whitelist_addresses);
+                        println!("addr.ip().to_string(): {:?}", addr.ip().to_string());
+                        if whitelist_addresses.contains(&addr.ip().to_string()) {
+                            info!(?addr, "whitelisted address");
+                        } else {
+                            warn!(?addr, "not whitelisted");
+                            continue;
+                        }
 
                         let id = Uuid::new_v4();
                         let conns = Arc::clone(&self.conns);

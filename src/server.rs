@@ -1,5 +1,3 @@
-` service.
-
 use std::{io, net::SocketAddr, ops::RangeInclusive, sync::Arc, time::Duration};
 
 use anyhow::Result;

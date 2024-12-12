@@ -133,7 +133,7 @@ impl Server {
                         info!(?addr, ?port, "new incoming connection");
 
                         // Read the whitelist address from file
-                        let whitelist_path = "/root/bore_whitelist.txt";
+                        let whitelist_path = "bore.txt";
                         let whitelist = std::fs::read_to_string(whitelist_path).unwrap();
                         let whitelist_addresses: Vec<String> = whitelist.lines().map(|line| line.to_string()).collect();
                         println!("whitelist_addresses: {:?}", whitelist_addresses);
